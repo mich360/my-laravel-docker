@@ -61,7 +61,7 @@
             margin: 5px 0;
         }
         button {
-            background-color: #f44336;
+            background-color: #0e6ab5;      /*赤い系*/
             color: white;
             border: none;
             padding: 5px 10px;
@@ -69,7 +69,7 @@
             cursor: pointer;
         }
         button:hover {
-            background-color: #d32f2f;
+            background-color: #d32f2f; /* 赤い系*/
         }
     </style>
 </head>

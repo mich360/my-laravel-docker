@@ -15,7 +15,6 @@ class CartController extends Controller
         
         // アイテムが見つかった場合
         if ($item) {
-            // カートにアイテムを追加
             return $this->addToCart($item);
         }
 
@@ -26,7 +25,6 @@ class CartController extends Controller
     // カートの内容を表示
     public function index()
     {
-        // セッションからカートの内容を取得
         $cart = session()->get('cart', []);
         return view('cart.index', compact('cart'));
     }
@@ -34,7 +32,6 @@ class CartController extends Controller
     // アイテムをカートに追加
     public function addToCart(Item $item)
     {
-        // セッションにカート情報を保存
         $cart = session()->get('cart', []);
 
         // アイテムがカートにすでに存在する場合
@@ -49,7 +46,6 @@ class CartController extends Controller
             ];
         }
 
-        // カートをセッションに保存
         session()->put('cart', $cart);
 
         return redirect()->route('cart.index')->with('success', 'アイテムがカートに追加されました!');
@@ -58,17 +54,37 @@ class CartController extends Controller
     // カートからアイテムを削除
     public function removeFromCart($id)
     {
-        // セッションからカート情報を取得
         $cart = session()->get('cart', []);
 
-        // アイテムがカートに存在する場合
         if (isset($cart[$id])) {
             unset($cart[$id]);
         }
 
-        // カートをセッションに保存
         session()->put('cart', $cart);
 
         return redirect()->route('cart.index')->with('success', 'アイテムがカートから削除されました!');
+    }
+
+    // カート内商品の数量を更新
+    public function update(Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        // 指定されたアイテムがカートに存在する場合
+        if (isset($cart[$id])) {
+            $newQuantity = $request->input('quantity');
+            
+            // 数量が1以上の場合のみ更新
+            if ($newQuantity > 0) {
+                $cart[$id]['quantity'] = $newQuantity;
+            } else {
+                // 数量が0以下の場合はアイテムを削除
+                unset($cart[$id]);
+            }
+        }
+
+        session()->put('cart', $cart);
+
+        return redirect()->route('cart.index')->with('success', '数量を更新しました。');
     }
 }
